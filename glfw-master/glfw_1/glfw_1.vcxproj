@@ -131,6 +131,7 @@
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MenuButton.cpp" />
+    <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
     <ClCompile Include="src\ProjectileManager.cpp" />
     <ClCompile Include="src\Square.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="inc\iniFile.h" />
     <ClInclude Include="inc\Main.h" />
     <ClInclude Include="inc\MenuButton.h" />
+    <ClInclude Include="inc\Player.h" />
     <ClInclude Include="inc\Projectile.h" />
     <ClInclude Include="inc\ProjectileManager.h" />
     <ClInclude Include="inc\Square.h" />

@@ -4,6 +4,7 @@
 #include "ProjectileManager.h"
 #include "iniFile.h"
 #include "TowerMenu.h"
+#include "Player.h"
 
 struct game {
 	SquareManager *squares;
@@ -11,6 +12,7 @@ struct game {
 	TowerManager *towers;
 	ProjectileManager *projectiles;
 	TowerMenu *menu;
+	Player *player;
 };
 
 typedef struct game *Game; // An ADT for using the game struct

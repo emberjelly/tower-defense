@@ -59,6 +59,9 @@ int Enemy::GetHp() {
 	return m_Health;
 }
 
+enemyType Enemy::getClass() {
+	return m_Class;
+}
 
 EnemyMoveList newList(int x, int y, int direction) {
 	EnemyMoveList list = new struct _enemyMoveList;
@@ -88,7 +91,7 @@ EnemyMoveList removeFirstNode(EnemyMoveList l) {
 int Enemy::moveEnemy(Enemy *e, double FrameRate) {
 	EnemyMoveList path = e->getPath();
 	int success = 0;
-	if (path != NULL) {
+	if (path->next != NULL) {
 		success = 1;
 		int direction = getFirstDirection(path);
 		if (direction == 0) { //North

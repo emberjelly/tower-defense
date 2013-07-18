@@ -11,12 +11,13 @@ game *loadGame(IniFile *ini) {
 	int i;
 	int count;
 	EnemyMoveList myList;
+
 	newGame->enemies = new EnemyManager;
 	newGame->squares = new SquareManager;
 	newGame->towers = new TowerManager;
 	newGame->projectiles = new ProjectileManager;
 	newGame->menu = new TowerMenu;
-	
+	newGame->player = new Player;
 	newGame->menu->addButton("CLOSE");
 	newGame->menu->addButton("GUN");
 
@@ -201,7 +202,7 @@ void update(Game g, double frameRate) {
 					g->projectiles->addProjectile((double)(g->towers->getTower(i)->getX() + SQUARE_SIZE/2), (double)(g->towers->getTower(i)->getY() + SQUARE_SIZE/2), bullet);
 					g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setSpeed(400);
 					g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setTarget(targetNum);
-					printf("%d\n", g->projectiles->getNumProjectiles());
+					//printf("%d\n", g->projectiles->getNumProjectiles());
 				}
 
 				// Add more if statements when I add more types of towers1
@@ -238,11 +239,23 @@ void update(Game g, double frameRate) {
 			g->projectiles->removeProjectile(i);
 			g->enemies->getEnemy(projTarget)->setHp(g->enemies->getEnemy(projTarget)->GetHp() - 1);
 			if (g->enemies->getEnemy(projTarget)->GetHp() <= 0) {
+				if (g->enemies->getEnemy(projTarget)->getClass() == drone) {
+					g->player->setResources(g->player->getResources() + 10);
+				} else if (g->enemies->getEnemy(projTarget)->getClass() == heavy_drone) {
+					g->player->setResources(g->player->getResources() + 25);
+				}
 				g->enemies->removeEnemy(projTarget);
+				printf ("Killed an enemy, resources available: %d\n", g->player->getResources());
 			}
 		} else {
-			g->projectiles->getProjectile(i)->setX(bulletX + newX);
-			g->projectiles->getProjectile(i)->setY(bulletY + newY);
+			//(NOTE)This is not an ideal solution but I will think of something better later
+			if (getDistance (bulletX, bulletY, enemyX, enemyY) > 50 ) {
+				g->projectiles->removeProjectile(i);
+				//printf("Bullet is in a position it shouldn't be in\n");
+			} else {
+				g->projectiles->getProjectile(i)->setX(bulletX + newX);
+				g->projectiles->getProjectile(i)->setY(bulletY + newY);
+			}
 		}
 
 	}

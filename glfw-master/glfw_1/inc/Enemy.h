@@ -2,7 +2,8 @@
 #define ENEMY_H
 
 enum enemyType {
-	drone
+	drone,
+	heavy_drone
 };
 
 typedef struct _enemyMoveList *EnemyMoveList;
@@ -18,7 +19,7 @@ public:
 	void setClass(enemyType e);
 	void setSpeed(double speed);
 	double getSpeed();
-	
+	enemyType getClass();
 	void setHp(int hp);
 	int GetHp();
 	

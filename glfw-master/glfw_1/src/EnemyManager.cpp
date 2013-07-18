@@ -29,6 +29,10 @@ void EnemyManager::addEnemy(enemyType enemyClass, double speed, EnemyMoveList pa
 	if (enemyClass == drone) {
 		m_ppEnemies[m_numEnemies - 1]->setHp(10);
 	}
+	if (enemyClass == heavy_drone) {
+		m_ppEnemies[m_numEnemies - 1]->setHp(50);
+	}
+
 	if (m_ppTemp !=NULL) {
 			delete[] m_ppTemp;
 	}

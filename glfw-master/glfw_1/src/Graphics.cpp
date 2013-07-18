@@ -124,16 +124,35 @@ void drawScene (GLFWwindow* window, game *g, int roundX, int roundY, double fram
 #ifndef EDIT_MODE
 	//Only draw enemies if not in edit mode
 	for (int i = 0; i < g->enemies->getNumOfEnemies(); i ++) {
-		glBegin(GL_QUADS);
-		glColor3f(1, 0, 0);
-		glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX(), g->enemies->getEnemy(i)->getY() + SQUARE_SIZE/2 - 2); 
-		glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX() + 4, g->enemies->getEnemy(i)->getY() + SQUARE_SIZE/2 - 2);
-		glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX() + 4, g->enemies->getEnemy(i)->getY() + 4 + SQUARE_SIZE/2 - 2);
-		glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX(), g->enemies->getEnemy(i)->getY() + 4 + SQUARE_SIZE/2 - 2);
-		glEnd();
+
+		if (g->enemies->getEnemy(i)->getClass() == drone) {
+			glBegin(GL_QUADS);
+				glColor3f(1, 0, 0);
+				glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX(), g->enemies->getEnemy(i)->getY() + SQUARE_SIZE/2 - 2); 
+				glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX() + 4, g->enemies->getEnemy(i)->getY() + SQUARE_SIZE/2 - 2);
+				glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX() + 4, g->enemies->getEnemy(i)->getY() + 4 + SQUARE_SIZE/2 - 2);
+				glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX(), g->enemies->getEnemy(i)->getY() + 4 + SQUARE_SIZE/2 - 2);
+			glEnd();
+		}
+		
+		if (g->enemies->getEnemy(i)->getClass() == heavy_drone) {
+			glBegin(GL_QUADS);
+				glColor3f(0.5, 0, 0);
+				glVertex2f(SQUARE_SIZE/2 - 3 + g->enemies->getEnemy(i)->getX(), g->enemies->getEnemy(i)->getY() + SQUARE_SIZE/2 - 3); 
+				glVertex2f(SQUARE_SIZE/2 - 3 + g->enemies->getEnemy(i)->getX() + 6, g->enemies->getEnemy(i)->getY() + SQUARE_SIZE/2 - 3);
+				glVertex2f(SQUARE_SIZE/2 - 3 + g->enemies->getEnemy(i)->getX() + 6, g->enemies->getEnemy(i)->getY() + 6 + SQUARE_SIZE/2 - 3);
+				glVertex2f(SQUARE_SIZE/2 - 3 + g->enemies->getEnemy(i)->getX(), g->enemies->getEnemy(i)->getY() + 6 + SQUARE_SIZE/2 - 3);
+			glEnd();
+		}
+
 		int hasMoved = g->enemies->getEnemy(i)->moveEnemy(g->enemies->getEnemy(i), 1/frameLoadTime);
 		if (!hasMoved) {
+			g->player->setHp(g->player->getHp() - 1);
+			printf("An enemy got through. HP is now %d\n", g->player->getHp());
 			g->enemies->removeEnemy(i);
+			if (g->player->getHp() <= 0 ) {
+				printf("The game was lost\n");
+			}
 		}
 	}
 #endif

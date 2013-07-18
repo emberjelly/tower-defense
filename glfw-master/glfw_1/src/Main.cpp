@@ -21,11 +21,11 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	if (action == GLFW_PRESS) {
 		key_states[key] = TRUE;
-		printf ("%c was pressed\n", key);
+		//printf ("%c was pressed\n", key);
 	}
 	if (action == GLFW_RELEASE) {
 		key_states[key] = FALSE;
-		printf ("%c was released\n", key);
+		//printf ("%c was released\n", key);
 	}
 }
 
@@ -87,6 +87,8 @@ int main(void)
 	g->towers = new TowerManager;
 	g->projectiles = new ProjectileManager;
 	g->menu = new TowerMenu;
+	g->player = new Player;
+
 #endif
 	
 	//Point to g to access the game data
@@ -178,13 +180,19 @@ int main(void)
 				//printf("%d    %d     %d     %d\n", roundX, g->menu->getButtonByName("GUN")->getX(), roundY, g->menu->getButtonByName("GUN")->getY());
 				int buttonX = g->menu->getButtonByName("GUN")->getX();
 				if ((roundX == buttonX || roundX == buttonX + SQUARE_SIZE || roundX == buttonX + 2*SQUARE_SIZE || roundX == buttonX + 3*SQUARE_SIZE) && roundY == g->menu->getButtonByName("GUN")->getY()) {
-					printf("clicked Button GUN\n");
-					g->towers->getTower(towerNumberSelected)->setType(gun);
-					g->menu->deactivateMenu();
+					//printf("clicked Button GUN\n");
+					if (g->player->getResources() >= 100) {
+						g->towers->getTower(towerNumberSelected)->setType(gun);
+						g->menu->deactivateMenu();
+						g->player->setResources(g->player->getResources() - 100);
+						printf("Current resources %d\n", g->player->getResources());
+					} else {
+						printf("Not enought resources for this, currently have %d\n",g->player->getResources());
+					}
 				}
 				buttonX = g->menu->getButtonByName("CLOSE")->getX();
 				if (((roundX == buttonX) || (roundX == buttonX + SQUARE_SIZE) || (roundX == buttonX + 2*SQUARE_SIZE) || (roundX == buttonX + 3*SQUARE_SIZE)) && roundY == g->menu->getButtonByName("CLOSE")->getY()) {
-					printf("clicked Button CLOSE\n");
+					//printf("clicked Button CLOSE\n");
 					g->menu->deactivateMenu();
 				}
 
@@ -192,8 +200,9 @@ int main(void)
 				for (int i = 0; i < g->towers->getNumTowers(); i ++) {
 					if (roundX == g->towers->getTower(i)->getX() && roundY == g->towers->getTower(i)->getY()) {
 						towerNumberSelected = i;
-						g->menu->activateMenu();
-						printf("open\n");
+						if (g->towers->getTower(i)->getType() == empty) {
+							g->menu->activateMenu();
+						}
 						key_states[256] = false;
 					}
 				}
@@ -202,14 +211,19 @@ int main(void)
 
 		if (glfwGetTime() - timerTest > epsilon) {
 			timerTest = glfwGetTime();
-			if ((int)timerTest%12 == 2) {
-				epsilon = 8;
+			epsilon = 0.6;
+			//printf("%f\n", epsilon);
+			if (glfwGetTime() > 60) {
+				g->enemies->addEnemy(heavy_drone, rand()%30 + 20, g->enemies->getMasterPath());
+				epsilon = 0.8;
 			} else {
-				epsilon = rand()%100;
-				epsilon = epsilon/100;
+				g->enemies->addEnemy(drone, rand()%60 + 20, g->enemies->getMasterPath());
 			}
-			printf("%f\n", epsilon);
-			g->enemies->addEnemy(drone, rand()%60 + 20, g->enemies->getMasterPath());
+
+			if (glfwGetTime() > 140) {
+				epsilon = 0.5;
+			}
+
 			g->enemies->getEnemy(g->enemies->getNumOfEnemies() - 1)->setX(getFirstX(g->enemies->getMasterPath()));
 			g->enemies->getEnemy(g->enemies->getNumOfEnemies() - 1)->setY(getFirstY(g->enemies->getMasterPath()));
 		}
