@@ -4,8 +4,6 @@
 #include <string.h>
 #include <stdio.h>
 
-extern class IniFile;
-extern class IniSection;
 
 class IniKeyValuePair
 {
@@ -44,11 +42,10 @@ public:
 			m_pNameBuffer = NULL;
 		}
 
-		int bufSize = strlen(newName) + 1;
+		size_t bufSize = strlen(newName) + 1;
 		m_pNameBuffer = new char[bufSize];
 
-		strcpy(m_pNameBuffer, newName);
-	
+		strcpy_s(m_pNameBuffer, bufSize, newName);
 	}
 
 	char *getValue()
@@ -67,7 +64,7 @@ public:
 		int bufSize = strlen(newValue) + 1;
 		m_pValueBuffer = new char[bufSize];
 
-		strcpy(m_pValueBuffer, newValue);
+		strcpy_s(m_pValueBuffer, bufSize, newValue);
 	}
 
 private:
@@ -151,10 +148,10 @@ public:
 			m_pSectionNameBuffer = NULL;
 		}
 
-		int bufSize = strlen(newSectionName) + 1;
+		size_t bufSize = strlen(newSectionName) + 1;
 		m_pSectionNameBuffer = new char[bufSize];
 
-		strcpy(m_pSectionNameBuffer, newSectionName);
+		strcpy_s(m_pSectionNameBuffer, bufSize, newSectionName);
 	}
 
 	char* getSectionName()

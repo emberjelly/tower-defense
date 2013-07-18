@@ -58,7 +58,7 @@ void cursorPosCallback(GLFWwindow* window ,double x , double y );
 
 	* Add more tower and enemy types
 
-	* Work on giving some structure to the rate, and type that enemies arrive arrive at to make the game playable.
+	* Work on giving some structure to the rate, and type that enemies arrive at to make the game playable.
 
 	* Add some more interface graphics to convey how much health the enemies have, maybe what enemies are coming next, available resources, health etc... 
 

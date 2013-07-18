@@ -142,14 +142,13 @@ void update(Game g, double frameRate) {
 	int i;
 	bool coolDownComplete;
 	double distance = -1;
-	double distTemp;
 
 	double towerX;
 	double towerY;
 	double enemyX;
 	double enemyY;
 
-	int pathLength; //The distance an enemy still has to go. The lower the distance, the higher the priority
+
 	
 	int targetNum = -1; //-1 is an invalid enemy number
 

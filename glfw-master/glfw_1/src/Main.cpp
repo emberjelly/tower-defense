@@ -67,7 +67,7 @@ void cursorPosCallback(GLFWwindow* window ,double x , double y ) {
 
 int main(void)
 {
-	IniFile *myIni = loadIni("test.ini");
+	IniFile *myIni = loadIni("map.ini");
 	game *g;
 	
 	//These are used to draw towers and square so we don't have to use g the whole time
@@ -97,7 +97,7 @@ int main(void)
 
 	//Set up the key states
 	int i;
-	for (int i = 0; i < 259; i++) key_states[i] = 0;
+	for (i = 0; i < 259; i++) key_states[i] = 0;
 
 	int towerNumberSelected = 0;
 	double start_time = 0; //The start time of the next frame
@@ -110,6 +110,8 @@ int main(void)
 
 	int roundX; //The X position of the mouse rounded of to the nearest "SQUARE_SIZE" position
 	int roundY; //The Y position of the mouse rounded of to the nearest "SQUARE_SIZE" position
+
+	bool waitForStart = FALSE;
 
 	GLFWwindow* window;
 	
@@ -135,7 +137,7 @@ int main(void)
 	glfwSetCursorPosCallback(window, cursorPosCallback);
 	
 	//Set background colour
-	glClearColor(0.3, 0.3, 0.3, 1);
+	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 	// select projection matrix
 	glMatrixMode(GL_PROJECTION);
@@ -186,6 +188,7 @@ int main(void)
 						g->menu->deactivateMenu();
 						g->player->setResources(g->player->getResources() - 100);
 						printf("Current resources %d\n", g->player->getResources());
+						waitForStart = TRUE;
 					} else {
 						printf("Not enought resources for this, currently have %d\n",g->player->getResources());
 					}
@@ -209,6 +212,7 @@ int main(void)
 			}
 		}
 
+	if (waitForStart) {
 		if (glfwGetTime() - timerTest > epsilon) {
 			timerTest = glfwGetTime();
 			epsilon = 0.6;
@@ -223,10 +227,11 @@ int main(void)
 			if (glfwGetTime() > 140) {
 				epsilon = 0.5;
 			}
-
 			g->enemies->getEnemy(g->enemies->getNumOfEnemies() - 1)->setX(getFirstX(g->enemies->getMasterPath()));
 			g->enemies->getEnemy(g->enemies->getNumOfEnemies() - 1)->setY(getFirstY(g->enemies->getMasterPath()));
 		}
+	}
+	
 
 		
 

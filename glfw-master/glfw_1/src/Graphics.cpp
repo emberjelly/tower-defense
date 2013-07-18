@@ -7,26 +7,26 @@ void drawScene (GLFWwindow* window, game *g, int roundX, int roundY, double fram
 	int y;
 	int i;
 
-	double red1;
-	double red2;
-	double blue1;
-	double blue2;
+	GLfloat red1;
+	GLfloat red2;
+	GLfloat blue1;
+	GLfloat blue2;
 
 	// First, draw a little texture into the background, this will be covered up as things are added on top
 	for (i = -96*640/480 - SQUARE_SIZE; i < 32*SQUARE_SIZE; i += SQUARE_SIZE) {
 		
 		glBegin(GL_QUADS);
-		glColor3f(0.2,0.2,0.2);
-		glVertex2f(i + SQUARE_SIZE - 1, -100);
-		glVertex2f(i + SQUARE_SIZE, -100);
-		glVertex2f(i + SQUARE_SIZE, 100);
-		glVertex2f(i + SQUARE_SIZE - 1, 100);
+		glColor3f(0.2f, 0.2f, 0.2f);
+		glVertex2i(i + SQUARE_SIZE - 1, -100);
+		glVertex2i(i + SQUARE_SIZE, -100);
+		glVertex2i(i + SQUARE_SIZE, 100);
+		glVertex2i(i + SQUARE_SIZE - 1, 100);
 
-		glColor3f(0.4,0.4,0.4);
-		glVertex2f(i, -100);
-		glVertex2f(i + 1, -100);
-		glVertex2f(i + 1, 100);
-		glVertex2f(i, 100);
+		glColor3f(0.4f, 0.4f, 0.4f);
+		glVertex2i(i, -100);
+		glVertex2i(i + 1, -100);
+		glVertex2i(i + 1, 100);
+		glVertex2i(i, 100);
 
 		glEnd();
 	}
@@ -35,17 +35,17 @@ void drawScene (GLFWwindow* window, game *g, int roundX, int roundY, double fram
 		
 		glBegin(GL_QUADS);
 		
-		glColor3f(0.2,0.2,0.2);
-		glVertex2f(-100*640/480, i);
-		glVertex2f(100*640/480, i);
-		glVertex2f(100*640/480, i + 1);
-		glVertex2f(-100*640/480, i + 1);
+		glColor3f(0.2f, 0.2f, 0.2f);
+		glVertex2i(-100*640/480, i);
+		glVertex2i(100*640/480, i);
+		glVertex2i(100*640/480, i + 1);
+		glVertex2i(-100*640/480, i + 1);
 
-		glColor3f(0.4,0.4,0.4);
-		glVertex2f(-100*640/480, i + SQUARE_SIZE - 1);
-		glVertex2f(100*640/480, i + SQUARE_SIZE - 1);
-		glVertex2f(100*640/480, i + SQUARE_SIZE);
-		glVertex2f(-100*640/480, i + SQUARE_SIZE);
+		glColor3f(0.4f, 0.4f, 0.4f);
+		glVertex2i(-100*640/480, i + SQUARE_SIZE - 1);
+		glVertex2i(100*640/480, i + SQUARE_SIZE - 1);
+		glVertex2i(100*640/480, i + SQUARE_SIZE);
+		glVertex2i(-100*640/480, i + SQUARE_SIZE);
 
 		glEnd();
 	}
@@ -127,7 +127,7 @@ void drawScene (GLFWwindow* window, game *g, int roundX, int roundY, double fram
 
 		if (g->enemies->getEnemy(i)->getClass() == drone) {
 			glBegin(GL_QUADS);
-				glColor3f(1, 0, 0);
+				glColor3f(1.0f, 0.0f, 0.0f);
 				glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX(), g->enemies->getEnemy(i)->getY() + SQUARE_SIZE/2 - 2); 
 				glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX() + 4, g->enemies->getEnemy(i)->getY() + SQUARE_SIZE/2 - 2);
 				glVertex2f(SQUARE_SIZE/2 - 2 + g->enemies->getEnemy(i)->getX() + 4, g->enemies->getEnemy(i)->getY() + 4 + SQUARE_SIZE/2 - 2);
