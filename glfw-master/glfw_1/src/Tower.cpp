@@ -39,6 +39,12 @@ void Tower::setType(Tower_Type type){
 		m_Range = 40;
 		m_CoolDown = 1;
 	}
+	if (type == machine_gun) {
+		m_FireRate = 6;
+		m_Range = 40;
+		m_CoolDown = 1;
+	}
+
 }
 
 double Tower::getCooloffState() {

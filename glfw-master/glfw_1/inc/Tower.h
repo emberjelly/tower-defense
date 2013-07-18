@@ -3,7 +3,8 @@
 
 enum Tower_Type {
 	empty,
-	gun
+	gun,
+	machine_gun
 };
 
 class Tower {

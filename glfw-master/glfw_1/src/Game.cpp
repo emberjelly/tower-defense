@@ -18,7 +18,9 @@ game *loadGame(IniFile *ini) {
 	newGame->projectiles = new ProjectileManager;
 	newGame->menu = new TowerMenu;
 	newGame->player = new Player;
+	
 	newGame->menu->addButton("CLOSE");
+	newGame->menu->addButton("MACHINE_GUN");
 	newGame->menu->addButton("GUN");
 
 	int direction = 0;
@@ -198,6 +200,12 @@ void update(Game g, double frameRate) {
 
 				//Now, find out what type of tower it is, and add a bullet that corresponds to the tower type
 				if (g->towers->getTower(i)->getType() == gun) {
+					g->projectiles->addProjectile((double)(g->towers->getTower(i)->getX() + SQUARE_SIZE/2), (double)(g->towers->getTower(i)->getY() + SQUARE_SIZE/2), bullet);
+					g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setSpeed(400);
+					g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setTarget(targetNum);
+					//printf("%d\n", g->projectiles->getNumProjectiles());
+				}
+				if (g->towers->getTower(i)->getType() == machine_gun) {
 					g->projectiles->addProjectile((double)(g->towers->getTower(i)->getX() + SQUARE_SIZE/2), (double)(g->towers->getTower(i)->getY() + SQUARE_SIZE/2), bullet);
 					g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setSpeed(400);
 					g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setTarget(targetNum);

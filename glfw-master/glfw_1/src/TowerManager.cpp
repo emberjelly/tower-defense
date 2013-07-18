@@ -46,10 +46,6 @@ void TowerManager::addTower(int x, int y, Tower_Type towerClass) {
 	m_ppTowers[m_NumTowers - 1]->setY(y);
 	m_ppTowers[m_NumTowers - 1]->setType(towerClass);
 
-	if (towerClass == gun) {
-		m_ppTowers[m_NumTowers - 1]->setFireRate(1);
-		m_ppTowers[m_NumTowers - 1]->setRange(50);
-	}
 }
 
 void TowerManager::removeTower(int towerNum) {

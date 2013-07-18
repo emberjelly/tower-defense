@@ -59,17 +59,23 @@ void drawScene (GLFWwindow* window, game *g, int roundX, int roundY, double fram
 
 
 		if (myTowers->getTower(i)->getType() == empty) {
-			glColor3f(0, 0, 0.8);
+			glColor3f(0.0f, 0.0f, 0.8f);
 			red1 = 0;
 			red2 = 0;
 			blue1 = 0.6;
 			blue2 = 1;
 		} else if ( myTowers->getTower(i)->getType() == gun) {
-			glColor3f(0.8, 0, 0);
+			glColor3f(0.8f, 0.0f, 0.0f);
 			red1 = 0.6;
 			red2 = 1;
 			blue1 = 0;
 			blue2 = 0;
+		} else if ( myTowers->getTower(i)->getType() == machine_gun) {
+			glColor3f(0.8f, 0.0f, 0.6f);
+			red1 = 0.6;
+			red2 = 2.0;
+			blue1 = 0.4;
+			blue2 = 0.8;
 		}
 
 		x = myTowers->getTower(i)->getX();

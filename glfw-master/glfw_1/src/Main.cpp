@@ -180,6 +180,7 @@ int main(void)
 			if (g->menu->isActive()) {
 				key_states[256] = false;
 				//printf("%d    %d     %d     %d\n", roundX, g->menu->getButtonByName("GUN")->getX(), roundY, g->menu->getButtonByName("GUN")->getY());
+				//(NOTE) Might add a cost member to the tower class to make this a bit more flexible
 				int buttonX = g->menu->getButtonByName("GUN")->getX();
 				if ((roundX == buttonX || roundX == buttonX + SQUARE_SIZE || roundX == buttonX + 2*SQUARE_SIZE || roundX == buttonX + 3*SQUARE_SIZE) && roundY == g->menu->getButtonByName("GUN")->getY()) {
 					//printf("clicked Button GUN\n");
@@ -193,6 +194,21 @@ int main(void)
 						printf("Not enought resources for this, currently have %d\n",g->player->getResources());
 					}
 				}
+				
+				buttonX = g->menu->getButtonByName("MACHINE_GUN")->getX();
+				if ((roundX == buttonX || roundX == buttonX + SQUARE_SIZE || roundX == buttonX + 2*SQUARE_SIZE || roundX == buttonX + 3*SQUARE_SIZE) && roundY == g->menu->getButtonByName("MACHINE_GUN")->getY()) {
+					//printf("clicked Button GUN\n");
+					if (g->player->getResources() >= 200) {
+						g->towers->getTower(towerNumberSelected)->setType(machine_gun);
+						g->menu->deactivateMenu();
+						g->player->setResources(g->player->getResources() - 200);
+						printf("Current resources %d\n", g->player->getResources());
+						waitForStart = TRUE;
+					} else {
+						printf("Not enought resources for this, currently have %d\n",g->player->getResources());
+					}
+				}
+
 				buttonX = g->menu->getButtonByName("CLOSE")->getX();
 				if (((roundX == buttonX) || (roundX == buttonX + SQUARE_SIZE) || (roundX == buttonX + 2*SQUARE_SIZE) || (roundX == buttonX + 3*SQUARE_SIZE)) && roundY == g->menu->getButtonByName("CLOSE")->getY()) {
 					//printf("clicked Button CLOSE\n");
@@ -233,7 +249,6 @@ int main(void)
 	}
 	
 
-		
 
 #endif
 
