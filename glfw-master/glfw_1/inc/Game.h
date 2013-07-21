@@ -17,6 +17,6 @@ struct game {
 
 typedef struct game *Game; // An ADT for using the game struct
 
-Game loadGame(IniFile *ini);
+void loadGame(game *newGame, IniFile *ini);
 void saveGame (Game g);
 void update(Game g, double frameRate);

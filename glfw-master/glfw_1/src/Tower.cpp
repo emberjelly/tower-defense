@@ -1,5 +1,6 @@
 #include "Tower.h"
 #include <stdio.h>
+
 Tower::Tower() {
 	m_X = 0;
 	m_Y = 0;
@@ -34,6 +35,11 @@ Tower_Type Tower::getType() {
 
 void Tower::setType(Tower_Type type){
 	m_TowerClass = type;
+	if (type == empty) {
+		m_FireRate = 0;
+		m_Range = 0;
+		m_CoolDown = 0;
+	}
 	if (type == gun) {
 		m_FireRate = 2;
 		m_Range = 40;
@@ -42,6 +48,12 @@ void Tower::setType(Tower_Type type){
 	if (type == machine_gun) {
 		m_FireRate = 6;
 		m_Range = 40;
+		m_CoolDown = 1;
+	}
+	
+	if (type == lazer) {
+		m_FireRate = 16;
+		m_Range = 50;
 		m_CoolDown = 1;
 	}
 
@@ -56,8 +68,7 @@ void Tower::setCooloffState(double state) {
 }
 
 bool Tower::updateState(double frameRate) {
-	if (m_FireRate > -0.3);
-	//printf("%f\n", m_CoolDown);
+
 	bool coolDownComplete = 0;
 	m_CoolDown -= m_FireRate/frameRate;
 	if (m_CoolDown <= 0) {

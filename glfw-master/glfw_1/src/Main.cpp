@@ -68,7 +68,7 @@ void cursorPosCallback(GLFWwindow* window ,double x , double y ) {
 int main(void)
 {
 	IniFile *myIni = loadIni("map.ini");
-	game *g;
+	game *g = new game;
 	
 	//These are used to draw towers and square so we don't have to use g the whole time
 	SquareManager *mySquares;
@@ -77,7 +77,7 @@ int main(void)
 //Set up the game according to the mode
 #ifndef EDIT_MODE
 	//If not in edit mode, load the current game saved to the ini file
-	g = loadGame(myIni);
+	loadGame(g, myIni);
 #endif
 #ifdef EDIT_MODE
 	//If in edit mode, set up an empty game for the user to put things into
@@ -182,26 +182,42 @@ int main(void)
 				//printf("%d    %d     %d     %d\n", roundX, g->menu->getButtonByName("GUN")->getX(), roundY, g->menu->getButtonByName("GUN")->getY());
 				//(NOTE) Might add a cost member to the tower class to make this a bit more flexible
 				int buttonX = g->menu->getButtonByName("GUN")->getX();
-				if ((roundX == buttonX || roundX == buttonX + SQUARE_SIZE || roundX == buttonX + 2*SQUARE_SIZE || roundX == buttonX + 3*SQUARE_SIZE) && roundY == g->menu->getButtonByName("GUN")->getY()) {
+				if ((roundX == buttonX || roundX == buttonX + SQUARE_SIZE || roundX == buttonX + 2*SQUARE_SIZE || roundX == buttonX + 3*SQUARE_SIZE) && roundY == g->menu->getButtonByName("GUN")->getY() && g->towers->getTower(towerNumberSelected)->getType() == empty) {
 					//printf("clicked Button GUN\n");
-					if (g->player->getResources() >= 100) {
+					if (g->player->getResources() >= g->towers->getTowerCost(gun)) {
 						g->towers->getTower(towerNumberSelected)->setType(gun);
 						g->menu->deactivateMenu();
-						g->player->setResources(g->player->getResources() - 100);
+						g->player->setResources(g->player->getResources() - g->towers->getTowerCost(gun));
+						printf("Current resources %d\n", g->player->getResources());
+						waitForStart = TRUE;
+
+					} else {
+						printf("Not enought resources for this, currently have %d\n",g->player->getResources());
+					}
+				}
+				
+				buttonX = g->menu->getButtonByName("LAZER")->getX();
+				if ((roundX == buttonX || roundX == buttonX + SQUARE_SIZE || roundX == buttonX + 2*SQUARE_SIZE || roundX == buttonX + 3*SQUARE_SIZE) && roundY == g->menu->getButtonByName("LAZER")->getY() && g->towers->getTower(towerNumberSelected)->getType() == empty) {
+					//printf("clicked Button GUN\n");
+					if (g->player->getResources() >= g->towers->getTowerCost(lazer)) {
+						g->towers->getTower(towerNumberSelected)->setType(lazer);
+						g->menu->deactivateMenu();
+						g->player->setResources(g->player->getResources() - g->towers->getTowerCost(lazer));
 						printf("Current resources %d\n", g->player->getResources());
 						waitForStart = TRUE;
 					} else {
 						printf("Not enought resources for this, currently have %d\n",g->player->getResources());
 					}
 				}
-				
-				buttonX = g->menu->getButtonByName("MACHINE_GUN")->getX();
-				if ((roundX == buttonX || roundX == buttonX + SQUARE_SIZE || roundX == buttonX + 2*SQUARE_SIZE || roundX == buttonX + 3*SQUARE_SIZE) && roundY == g->menu->getButtonByName("MACHINE_GUN")->getY()) {
+
+
+				buttonX = g->menu->getButtonByName("UPGRADE")->getX();
+				if ((roundX == buttonX || roundX == buttonX + SQUARE_SIZE || roundX == buttonX + 2*SQUARE_SIZE || roundX == buttonX + 3*SQUARE_SIZE) && roundY == g->menu->getButtonByName("UPGRADE")->getY() && g->towers->getTower(towerNumberSelected)->getType() == gun) {
 					//printf("clicked Button GUN\n");
-					if (g->player->getResources() >= 200) {
+					if (g->player->getResources() >= g->towers->getTowerCost(machine_gun)) {
 						g->towers->getTower(towerNumberSelected)->setType(machine_gun);
 						g->menu->deactivateMenu();
-						g->player->setResources(g->player->getResources() - 200);
+						g->player->setResources(g->player->getResources() - g->towers->getTowerCost(machine_gun));
 						printf("Current resources %d\n", g->player->getResources());
 						waitForStart = TRUE;
 					} else {
@@ -219,9 +235,7 @@ int main(void)
 				for (int i = 0; i < g->towers->getNumTowers(); i ++) {
 					if (roundX == g->towers->getTower(i)->getX() && roundY == g->towers->getTower(i)->getY()) {
 						towerNumberSelected = i;
-						if (g->towers->getTower(i)->getType() == empty) {
-							g->menu->activateMenu();
-						}
+						g->menu->activateMenu();
 						key_states[256] = false;
 					}
 				}
@@ -229,22 +243,26 @@ int main(void)
 		}
 
 	if (waitForStart) {
+		static float startTime = glfwGetTime();
 		if (glfwGetTime() - timerTest > epsilon) {
 			timerTest = glfwGetTime();
-			epsilon = 0.6;
+			epsilon = 0.8;
 			//printf("%f\n", epsilon);
-			if (glfwGetTime() > 60) {
-				g->enemies->addEnemy(heavy_drone, rand()%30 + 20, g->enemies->getMasterPath());
-				epsilon = 0.8;
-			} else {
-				g->enemies->addEnemy(drone, rand()%60 + 20, g->enemies->getMasterPath());
+			if (glfwGetTime() - startTime > 80) {
+				g->enemies->addEnemy(heavy_drone, 30, g->enemies->getMasterPath());
+				epsilon = 1.4;
+				g->enemies->getEnemy(g->enemies->getNumOfEnemies() - 1)->setX(getFirstX(g->enemies->getMasterPath()));
+			g->enemies->getEnemy(g->enemies->getNumOfEnemies() - 1)->setY(getFirstY(g->enemies->getMasterPath()));
+			} else if (glfwGetTime() - startTime < 70 && glfwGetTime() - startTime > 10) {
+				g->enemies->addEnemy(drone, 40, g->enemies->getMasterPath());
+				g->enemies->getEnemy(g->enemies->getNumOfEnemies() - 1)->setX(getFirstX(g->enemies->getMasterPath()));
+				g->enemies->getEnemy(g->enemies->getNumOfEnemies() - 1)->setY(getFirstY(g->enemies->getMasterPath()));
 			}
 
-			if (glfwGetTime() > 140) {
-				epsilon = 0.5;
+			if (glfwGetTime() - startTime > 140) {
+				epsilon = 0.8;
 			}
-			g->enemies->getEnemy(g->enemies->getNumOfEnemies() - 1)->setX(getFirstX(g->enemies->getMasterPath()));
-			g->enemies->getEnemy(g->enemies->getNumOfEnemies() - 1)->setY(getFirstY(g->enemies->getMasterPath()));
+
 		}
 	}
 	

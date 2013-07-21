@@ -4,7 +4,8 @@
 enum Tower_Type {
 	empty,
 	gun,
-	machine_gun
+	machine_gun,
+	lazer
 };
 
 class Tower {
@@ -25,6 +26,7 @@ public:
 	void setRange (double range);
 	double getRange();
 
+
 private:
 	Tower_Type m_TowerClass;
 	int m_X;
@@ -32,6 +34,7 @@ private:
 	double m_CoolDown;
 	double m_FireRate;
 	double m_Range;
+
 };
 
 #endif

@@ -5,6 +5,7 @@ Projectile::Projectile() {
 	m_Y = 0;
 	m_Speed = 0;
 	m_Target = 0;
+	m_TowerNumber = 0;
 }
 
 Projectile::~Projectile() {
@@ -50,3 +51,12 @@ void Projectile::setType(Projectile_Type type) {
 	m_ProjClass = type;
 }
 
+void Projectile::setTowerNumber(int num) {
+
+	m_TowerNumber = num;
+}
+
+int Projectile::getTowerNumber() {
+	return m_TowerNumber;
+
+}

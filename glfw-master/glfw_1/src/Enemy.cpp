@@ -51,11 +51,11 @@ double Enemy::getSpeed() {
 }
 
 
-void Enemy::setHp(int hp) {
+void Enemy::setHp(float hp) {
 	m_Health = hp;
 }
 
-int Enemy::GetHp() {
+float Enemy::GetHp() {
 	return m_Health;
 }
 

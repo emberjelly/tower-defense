@@ -3,7 +3,7 @@
 
 Player::Player() {
 	m_Health = 10;
-	m_Resources = 2000;
+	m_Resources = 1000;
 }
 
 

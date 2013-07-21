@@ -12,7 +12,7 @@ public:
 	Tower* getTowerByCoods(int x, int y);
 	void addTower(int x, int y, Tower_Type towerClass);
 	void removeTower(int towerNum);
-
+	int getTowerCost(Tower_Type towerType);
 private:
 	int m_NumTowers;
 	Tower **m_ppTowers;

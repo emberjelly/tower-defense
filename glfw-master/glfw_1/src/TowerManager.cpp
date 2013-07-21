@@ -51,3 +51,18 @@ void TowerManager::addTower(int x, int y, Tower_Type towerClass) {
 void TowerManager::removeTower(int towerNum) {
 
 }
+
+
+int TowerManager::getTowerCost(Tower_Type towerType) {
+	int cost;
+	if (towerType == gun) {
+		cost = 100;
+	}
+	if (towerType == machine_gun) {
+		cost = 200;
+	}
+	if (towerType == lazer) {
+		cost = 400;
+	}
+	return cost;
+}

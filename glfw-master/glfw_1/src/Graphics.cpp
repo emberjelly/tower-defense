@@ -7,10 +7,13 @@ void drawScene (GLFWwindow* window, game *g, int roundX, int roundY, double fram
 	int y;
 	int i;
 
-	GLfloat red1;
-	GLfloat red2;
-	GLfloat blue1;
-	GLfloat blue2;
+	GLfloat red1 = 0;
+	GLfloat red2 = 0;
+	GLfloat blue1 = 0;
+	GLfloat blue2 = 0;
+	GLfloat green1 = 0;
+	GLfloat green2 = 0;
+
 
 	// First, draw a little texture into the background, this will be covered up as things are added on top
 	for (i = -96*640/480 - SQUARE_SIZE; i < 32*SQUARE_SIZE; i += SQUARE_SIZE) {
@@ -64,18 +67,32 @@ void drawScene (GLFWwindow* window, game *g, int roundX, int roundY, double fram
 			red2 = 0;
 			blue1 = 0.6;
 			blue2 = 1;
+			green1 = 0;
+			green2 = 0;
 		} else if ( myTowers->getTower(i)->getType() == gun) {
 			glColor3f(0.8f, 0.0f, 0.0f);
 			red1 = 0.6;
 			red2 = 1;
 			blue1 = 0;
 			blue2 = 0;
+			green1 = 0;
+			green2 = 0;
 		} else if ( myTowers->getTower(i)->getType() == machine_gun) {
 			glColor3f(0.8f, 0.0f, 0.6f);
 			red1 = 0.6;
 			red2 = 2.0;
 			blue1 = 0.4;
 			blue2 = 0.8;
+			green1 = 0;
+			green2 = 0;
+		} else if ( myTowers->getTower(i)->getType() == lazer) {
+			glColor3f(0.0f, 0.6f, 0.0f);
+			red1 = 0;
+			red2 = 0;
+			blue1 = 0;
+			blue2 = 0;
+			green1 = 0.4;
+			green2 = 0.8;
 		}
 
 		x = myTowers->getTower(i)->getX();
@@ -86,7 +103,7 @@ void drawScene (GLFWwindow* window, game *g, int roundX, int roundY, double fram
 		glVertex2f(x + SQUARE_SIZE, y + SQUARE_SIZE);
 		glVertex2f(x, y + SQUARE_SIZE);
 				
-		glColor3f(red1, 0, blue1);
+		glColor3f(red1, green1, blue1);
 		glVertex2f(x + SQUARE_SIZE - 1, y);
 		glVertex2f(x + SQUARE_SIZE, y);
 		glVertex2f(x + SQUARE_SIZE, y + SQUARE_SIZE);
@@ -97,7 +114,7 @@ void drawScene (GLFWwindow* window, game *g, int roundX, int roundY, double fram
 		glVertex2f(x + SQUARE_SIZE, y + 1);
 		glVertex2f(x, y + 1);
 		
-		glColor3f(red2, 0, blue2);
+		glColor3f(red2, green2, blue2);
 		
 		glVertex2f(x, y);
 		glVertex2f(x + 1, y);
@@ -165,13 +182,26 @@ void drawScene (GLFWwindow* window, game *g, int roundX, int roundY, double fram
 
 
 	for (i = 0; i < g->projectiles->getNumProjectiles(); i ++) {
-	glBegin(GL_QUADS);
-		glColor3f(1, 1, 1);
-		glVertex2i (g->projectiles->getProjectile(i)->getX(), g->projectiles->getProjectile(i)->getY());
-		glVertex2i (g->projectiles->getProjectile(i)->getX() + 2, g->projectiles->getProjectile(i)->getY());
-		glVertex2i (g->projectiles->getProjectile(i)->getX() + 2, g->projectiles->getProjectile(i)->getY() + 2);
-		glVertex2i (g->projectiles->getProjectile(i)->getX(), g->projectiles->getProjectile(i)->getY() + 2);
-	glEnd();
+		if (g->projectiles->getProjectile(i)->getType() == bullet) {
+			glBegin(GL_QUADS);
+			glColor3f(1, 1, 1);
+			glVertex2f (g->projectiles->getProjectile(i)->getX(), g->projectiles->getProjectile(i)->getY());
+			glVertex2f (g->projectiles->getProjectile(i)->getX() + 2, g->projectiles->getProjectile(i)->getY());
+			glVertex2f (g->projectiles->getProjectile(i)->getX() + 2, g->projectiles->getProjectile(i)->getY() + 2);
+			glVertex2f (g->projectiles->getProjectile(i)->getX(), g->projectiles->getProjectile(i)->getY() + 2);
+			glEnd();
+		} else if ( g->projectiles->getProjectile(i)->getType() == lazer_beam) {
+			glBegin(GL_LINES);
+			glColor3f(1, 1, 1);
+			int towerNum = g->projectiles->getProjectile(i)->getTowerNumber();
+			int enemyNum = g->projectiles->getProjectile(i)->getTarget();
+			glVertex2f ((float)(g->towers->getTower(towerNum)->getX()) + SQUARE_SIZE/2, (float)(g->towers->getTower(towerNum)->getY()) + SQUARE_SIZE/2);
+			glVertex2f (g->enemies->getEnemy(enemyNum)->getX() + SQUARE_SIZE/2,g->enemies->getEnemy(enemyNum)->getY() + SQUARE_SIZE/2);
+
+			glEnd();
+
+		}
+
 	}
 
 	if (g->menu->isActive()) {

@@ -6,8 +6,7 @@
 //This file is involved with creating new games, saving games in edit mode, loading existing game, updating the game state etc...
 
 
-game *loadGame(IniFile *ini) {
-	game *newGame = new game;
+void loadGame(game *newGame, IniFile *ini) {
 	int i;
 	int count;
 	EnemyMoveList myList;
@@ -20,8 +19,9 @@ game *loadGame(IniFile *ini) {
 	newGame->player = new Player;
 	
 	newGame->menu->addButton("CLOSE");
-	newGame->menu->addButton("MACHINE_GUN");
+	newGame->menu->addButton("LAZER");
 	newGame->menu->addButton("GUN");
+	newGame->menu->addButton("UPGRADE");
 
 	int direction = 0;
 	if ((ini->getSection("Path")->getkeyCount()) > 1) { 
@@ -84,8 +84,6 @@ game *loadGame(IniFile *ini) {
 	for (i = 0; i < count; i ++) {
 		newGame->towers->addTower(atoi(ini->getSection("Towers")->getKey(i)->getName()), atoi(ini->getSection("Towers")->getKey(i)->getValue()), empty);
 	}
-
-	return newGame;
 }
 
 
@@ -127,7 +125,7 @@ void saveGame (Game g) {
 		itoa(g->towers->getTower(count)->getY(), yBuf, 10);
 		map->getSection("Towers")->addKey(xBuf, yBuf);
 	}
-	saveIni(map, "test.ini");
+	saveIni(map, "map.ini");
 }
 
 
@@ -199,19 +197,19 @@ void update(Game g, double frameRate) {
 			if (targetNum >= 0) {
 
 				//Now, find out what type of tower it is, and add a bullet that corresponds to the tower type
-				if (g->towers->getTower(i)->getType() == gun) {
+				if (g->towers->getTower(i)->getType() == gun || g->towers->getTower(i)->getType() == machine_gun) {
 					g->projectiles->addProjectile((double)(g->towers->getTower(i)->getX() + SQUARE_SIZE/2), (double)(g->towers->getTower(i)->getY() + SQUARE_SIZE/2), bullet);
 					g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setSpeed(400);
 					g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setTarget(targetNum);
 					//printf("%d\n", g->projectiles->getNumProjectiles());
 				}
-				if (g->towers->getTower(i)->getType() == machine_gun) {
-					g->projectiles->addProjectile((double)(g->towers->getTower(i)->getX() + SQUARE_SIZE/2), (double)(g->towers->getTower(i)->getY() + SQUARE_SIZE/2), bullet);
+				if (g->towers->getTower(i)->getType() == lazer) {
+					g->projectiles->addProjectile((double)(g->towers->getTower(i)->getX() + SQUARE_SIZE/2), (double)(g->towers->getTower(i)->getY() + SQUARE_SIZE/2), lazer_beam);
 					g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setSpeed(400);
 					g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setTarget(targetNum);
 					//printf("%d\n", g->projectiles->getNumProjectiles());
 				}
-
+				g->projectiles->getProjectile((g->projectiles->getNumProjectiles() - 1))->setTowerNumber(i);
 				// Add more if statements when I add more types of towers1
 			}
 		}
@@ -227,6 +225,7 @@ void update(Game g, double frameRate) {
 	double newX;
 
 	for (i = 0; i < g->projectiles->getNumProjectiles(); i ++) {
+		
 		//Calculate the new X and Y coordinates of the projectile
 		bulletMoveDistance = g->projectiles->getProjectile(i)->getSpeed()/frameRate;
 		projTarget = g->projectiles->getProjectile(i)->getTarget();
@@ -243,7 +242,7 @@ void update(Game g, double frameRate) {
 			g->projectiles->removeProjectile(i);
 		} else if (targetDistance < 0.5) {
 			// If the target is close enough for a collision, subtract from the enemy hp
-			g->projectiles->removeProjectile(i);
+
 			g->enemies->getEnemy(projTarget)->setHp(g->enemies->getEnemy(projTarget)->GetHp() - 1);
 			if (g->enemies->getEnemy(projTarget)->GetHp() <= 0) {
 				if (g->enemies->getEnemy(projTarget)->getClass() == drone) {
@@ -253,7 +252,16 @@ void update(Game g, double frameRate) {
 				}
 				g->enemies->removeEnemy(projTarget);
 				printf ("Killed an enemy, resources available: %d\n", g->player->getResources());
+				if (g->towers->getTower(g->projectiles->getProjectile(i)->getTowerNumber())->getType() == lazer) {
+				}
+				//This is the time that a tower must be idle before it find a new target after it kills an enemy
+				double reTarget = 2*g->towers->getTower(g->projectiles->getProjectile(i)->getTowerNumber())->getFireRate();
+				int towerNumber = g->projectiles->getProjectile(i)->getTowerNumber();
+				if (g->towers->getTower(towerNumber)->getType() == lazer) {
+					g->towers->getTower(towerNumber)->setCooloffState(reTarget);
+				}
 			}
+			g->projectiles->removeProjectile(i);
 		} else {
 			//(NOTE)This is not an ideal solution but I will think of something better later
 			if (getDistance (bulletX, bulletY, enemyX, enemyY) > 50 ) {

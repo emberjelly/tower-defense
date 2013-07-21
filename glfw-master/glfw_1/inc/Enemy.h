@@ -20,8 +20,8 @@ public:
 	void setSpeed(double speed);
 	double getSpeed();
 	enemyType getClass();
-	void setHp(int hp);
-	int GetHp();
+	void setHp(float hp);
+	float GetHp();
 	
 	//gives the enemy a new path
 	void setPath (EnemyMoveList path);
@@ -39,7 +39,7 @@ private:
 	enemyType m_Class;
 	double m_Speed;
 	EnemyMoveList m_Path;
-	int m_Health;
+	float m_Health;
 };
 
 // A linked list for the enemy path
